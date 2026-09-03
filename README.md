@@ -23,7 +23,7 @@ DeyeCloud OpenAPI (https://eu1-developer.deyecloud.com)
 ```bash
 cd e:\deye-secure-proxy
 uv venv --python 3.11 .venv
-uv pip install --python .venv/Scripts/python.exe "mcp>=1.0,<2.0" httpx
+uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 ```
 
 Create `~/.deye/credentials.env` (see `credentials.env.example` format).
@@ -54,6 +54,23 @@ mcp_servers:
 - `confirm_control_change(proposal_id)` → executes (one-shot)
 
 See `deye-open-mcp` skill for full `action_type` list and allowed devices.
+
+## Skills (Hermes Agent)
+
+The `skills/` directory contains the Hermes skills that document the proxy
+tool surface and provide domain-specific workflows (battery sizing, config review).
+
+```bash
+cp -r skills/* ~/.hermes/skills/
+```
+
+Restart Hermes after copying.
+
+| Skill | Purpose |
+|---|---|
+| `deye-open-mcp` | Tool map, safety rules, troubleshooting |
+| `deye-hybrid-solar-analysis` | Battery sizing, bill-to-zero, solar review |
+| `deye-inverter-config-review` | Read-only config audit |
 
 ## Security
 
