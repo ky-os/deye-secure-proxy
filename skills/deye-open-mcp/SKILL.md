@@ -1,7 +1,7 @@
 ---
 name: deye-open-mcp
-description: Use Deye Open MCP tools to query and operate DeyeCloud stations, devices, telemetry, alarms, configuration, and order/control results through a configured MCP server.
-version: 2.0.0
+description: Use Deye Open MCP tools to query and operate DeyeCloud stations, devices, telemetry, alarms, configuration, and control results via the local deye-secure-proxy.
+version: 3.0.0
 author: Deye Open MCP (proxy adapter)
 license: MIT
 platforms: [macos, linux, windows]
@@ -12,7 +12,7 @@ metadata:
 
 # Deye Open MCP (via Secure Proxy)
 
-> **This skill now operates through `deye-secure-proxy`, a local MCP server.**
+> This skill operates through `deye-secure-proxy`, a local MCP server.
 > The remote `deye_open` MCP is **disabled** in favor of the local proxy.
 > Credentials never leave the proxy process — the agent calls curated tools directly.
 
@@ -21,9 +21,9 @@ metadata:
 - **No credential sourcing.** The agent no longer sources `credentials.env` or calls `get_access_token`.
 - **No `call_deye_api`.** The generic HTTP proxy is eliminated — only curated tools are exposed.
 - **Two-step control.** State-changing actions require `propose_control_change` → human confirmation → `confirm_control_change`.
-- **Device whitelist.** Only known device SNs are accepted for control actions.
+- **Device whitelist.** Only whitelisted device SNs are accepted for control actions (configured in the proxy).
 
-## Agent-Visible Tools (via `deye-secure-proxy`)
+## Agent-Visible Tools
 
 ### Read-only (always safe)
 
@@ -50,11 +50,11 @@ metadata:
 | `confirm_control_change(proposal_id)` | Execute a staged action (one-shot, consumed) |
 
 **Allowed `action_type` values:**
-- `set_work_mode` — `{"mode": "SELLING_FIRST"}`
-- `set_energy_pattern` — `{"pattern": "BATTERY_FIRST"}`
-- `set_solar_sell` — `{"action": "on"}`
-- `set_tou_switch` — `{"action": "on", "days": [...6 days...]}`
-- `set_tou_update` — `{"items": [...6x TimeUseSettingItem...]}`
+- `set_work_mode` — `{"mode": "SELLING_FIRST"}` (or `ZERO_EXPORT_TO_LOAD`, `ZERO_EXPORT_TO_CT`)
+- `set_energy_pattern` — `{"pattern": "BATTERY_FIRST"}` (or `LOAD_FIRST`)
+- `set_solar_sell` — `{"action": "on"}` (or `"off"`)
+- `set_tou_switch` — `{"action": "on", "days": ["MONDAY", ...]}`
+- `set_tou_update` — `{"items": [6x TimeUseSettingItem]}`
 - `set_battery_type` — `{"batteryType": "BATT_V"}`
 - `set_battery_param` — `{"parameter_type": "MAX_CHARGE_CURRENT", "value": 20}`
 - `set_power_limit` — `{"power_type": "MAX_SOLAR_POWER", "value": 5000}`
@@ -63,7 +63,7 @@ metadata:
 - `set_battery_mode` — `{"action": "on", "mode_type": "GEN_CHARGE"}`
 - `set_smartload` — `{"onGridAlwaysOn": false, ...}`
 
-**Allowed devices:** `2507120169` (BaskSolar1), `2305202443` (BaskSolar2)
+**Allowed devices:** configured in the proxy's `ALLOWED_DEVICES` set.
 
 ## Safety Rules
 
@@ -76,6 +76,6 @@ metadata:
 ## Troubleshooting
 
 - **"Invalid, expired, or already-used proposal_id"** — Re-propose the action.
-- **"Device not in allowed list"** — Only `2507120169` and `2305202443` are whitelisted.
+- **"Device not in allowed list"** — Target device is not in the proxy's `ALLOWED_DEVICES`.
 - **Tools unavailable** — Ensure `deye-secure-proxy` is enabled in `~/.hermes/config.yaml` and `deye_open` is disabled.
 - **Auth failures** — Check `~/.deye/credentials.env` is valid; the proxy logs to stderr on failure.

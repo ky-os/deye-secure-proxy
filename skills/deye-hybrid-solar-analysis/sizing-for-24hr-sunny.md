@@ -1,6 +1,6 @@
 # Sizing for 24-hour sustain (sunny day) — worked methodology
 
-Derived 2026-09-03 from a BaskSolar2 audit request. This reference captures the full calculation so future sessions can reproduce or adapt it without rebuilding from scratch.
+This reference captures the full calculation so future sessions can reproduce or adapt it without rebuilding from scratch.
 
 ## Problem statement
 
@@ -8,20 +8,20 @@ User asked: "What is the minimum battery capacity I need to sustain 24 hours, gi
 
 Interpretation: a sunny day means the PV array covers all daytime loads and recharges the battery. The battery must then carry **all nighttime loads** from sunset until solar ramps again the next morning. The sizing target is nighttime sustain, not daily kWh balance.
 
-## Constants (Philippines, clear day)
+## Constants (equatorial, clear day)
 
 | Constant | Value | Notes |
 |---|---|---|
-| Nighttime window | ~14 hrs | 6 PM – 6 AM, PHT = UTC+8, no DST |
+| Nighttime window | ~14 hrs | 6 PM – 6 AM, no DST |
 | Peak sun hours | ~5 hrs | Good tilt, zero shading, equatorial |
 | Inverter + wiring loss | 0.80 | Standard for hybrid solar |
 | Safety factor | 1.25× | Aging, temperature, morning/evening ramp |
 | Usable DoD | 0.80 | 20% floor; non-comm BMS needs conservative floor |
 | 16S LiFePO4 nominal V | 51.2 V | 3.2 V/cell × 16 |
 
-## Appliance load profile (PH residential, 5 kW inverter)
+## Appliance load profile (residential, 5 kW inverter)
 
-Built from a typical BaskSolar2 household. Adjust per the user's actual loads.
+Built from a typical household. Adjust per the user's actual loads.
 
 | Load | Power | Duty / hrs | Night kWh |
 |---|---|---|---|
@@ -45,7 +45,7 @@ required_total_kWh   = required_usable_kWh / 0.80
 required_Ah          = (required_total_kWh × 1000) / nominal_V
 ```
 
-## Worked example — BaskSolar2 current pack
+## Worked example — 52Ah stock pack
 
 Stock battery: 16S 52Ah LiFePO4 (non-comm BMS).
 

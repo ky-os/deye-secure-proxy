@@ -1,7 +1,7 @@
 ---
 name: deye-inverter-config-review
 description: Audit Deye hybrid inverter config for discrepancies.
-version: 2.0.0
+version: 3.0.0
 platforms: [macos, linux, windows]
 metadata:
   hermes:
@@ -36,7 +36,7 @@ Conduct a read-only audit of Deye hybrid inverter configuration via the **`deye-
 - **Grid import with a full battery:** `DailyEnergyPurchased > 0` while SOC ≈ 100% and load small = battery being left idle. Correlate with energy pattern + discharge current limits.
 - **Solar production cap:** `maxSolarPower` far below inverter `RatedPower` clips PV on sunny days (e.g. 3000 on a 5000 W unit ≈ 40% headroom). Flag for raise unless intentional.
 - **Inert settings:** `maxSellPower` set while `systemWorkMode = ZERO_EXPORT_TO_LOAD` is a no-op. Note only; correct if ever switching to a selling mode.
-- **Timezone metadata:** station `regionTimezone` may be `PRC` while physically elsewhere — harmless if both are UTC+8 no-DST, but misconfigured metadata to note.
+- **Timezone metadata:** station `regionTimezone` may be misconfigured — harmless if the offset matches, but flag if it could affect TOU scheduling.
 - **Battery floors:** sane defaults are `battLowCapacity=20` / `battShutDownCapacity=18` — flag only if inverted (shutdown > low) or extreme.
 - **Healthy signs (no action):** zero export holding (`TotalGridPower=0`, `wirePower=0`), surplus PV banking into battery, battery voltage in normal operating range.
 
