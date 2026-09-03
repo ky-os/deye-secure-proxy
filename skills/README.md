@@ -1,13 +1,18 @@
 # Hermes Skills
 
-These are the Hermes Agent skills for using the Deye Secure Proxy MCP.
-Copy them into `~/.hermes/skills/` (or use `hermes skill install` if supported).
+Hermes Agent skills for the Deye Secure Proxy MCP.
 
 ## Install
 
 ```bash
-# Copy the skill directories into Hermes skills folder
+# Linux / macOS / git-bash
 cp -r skills/* ~/.hermes/skills/
+
+# Windows (PowerShell)
+xcopy /E /I skills\* $env:USERPROFILE\.hermes\skills\
+
+# Windows (cmd)
+xcopy /E /I skills\* %USERPROFILE%\.hermes\skills\
 ```
 
 Restart Hermes after copying.
@@ -16,6 +21,8 @@ Restart Hermes after copying.
 
 | Skill | Purpose |
 |---|---|
-| `deye-open-mcp` | Documents the proxy tool surface, safety rules, and troubleshooting |
-| `deye-hybrid-solar-analysis` | Solar config review, battery sizing, bill-to-zero analysis |
-| `deye-inverter-config-review` | Read-only inverter config audit with discrepancy detection |
+| `deye-open-mcp` | Tool surface + safety rules |
+| `deye-hybrid-solar-analysis` | Solar config review, battery sizing, bill-to-zero |
+| `deye-inverter-config-review` | Read-only config audit |
+
+See each `SKILL.md` for full details.

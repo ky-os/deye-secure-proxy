@@ -22,18 +22,22 @@ DeyeCloud OpenAPI (https://eu1-developer.deyecloud.com)
 
 ## Hermes Agent Configuration
 
-`~/.hermes/config.yaml`:
+`~/.hermes/config.yaml` (replace `<REPO_ROOT>` with your actual path):
 
 ```yaml
 mcp_servers:
   deye-secure-proxy:
-    command: C:\Users\Admin\.deye\proxy\.venv\Scripts\python.exe
-    args: ["C:\Users\Admin\.deye\proxy\deye_secure_proxy.py"]
+    command: <REPO_ROOT>/.venv/Scripts/python.exe
+    args: ["<REPO_ROOT>/deye_secure_proxy.py"]
     transport: stdio
     enabled: true
   deye_open:
     enabled: false
 ```
+
+Examples:
+- Windows: `command: C:\Users\Admin\deye-secure-proxy\.venv\Scripts\python.exe`
+- macOS/Linux: `command: /home/user/deye-secure-proxy/.venv/bin/python`
 
 After editing config, restart Hermes or run `/reload-mcp`.
 
@@ -63,8 +67,8 @@ DEYE_DATA_CENTER=eu
 
 | Path | Purpose |
 |---|---|
-| `~/.deye/proxy/deye_secure_proxy.py` | Proxy MCP server |
-| `~/.deye/proxy/.venv/` | Python venv (mcp + httpx) |
+| `<REPO_ROOT>/deye_secure_proxy.py` | Proxy MCP server |
+| `<REPO_ROOT>/.venv/` | Python venv (mcp + httpx) |
 | `~/.deye/credentials.env` | Credentials (chmod 600 recommended) |
 | `~/.deye/.token_cache.json` | Token cache (chmod 600, auto-managed) |
 

@@ -18,53 +18,55 @@ deye-secure-proxy (stdio MCP)
 DeyeCloud OpenAPI (https://eu1-developer.deyecloud.com)
 ```
 
-## Setup
+## Quick Start
 
 ```bash
-cd e:\deye-secure-proxy
+# Clone
+git clone https://github.com/ky-os/deye-secure-proxy.git
+cd deye-secure-proxy
+
+# Setup venv
 uv venv --python 3.11 .venv
 uv pip install --python .venv/Scripts/python.exe -r requirements.txt
+
+# Credentials (see credentials.env.example for format)
+mkdir -p ~/.deye
+cp credentials.env.example ~/.deye/credentials.env
+# then edit with your real values
+
+# Install skills into Hermes
+cp -r skills/* ~/.hermes/skills/
+
+# Wire into Hermes config (~/.hermes/config.yaml):
+#   mcp_servers:
+#     deye-secure-proxy:
+#       command: <REPO_ROOT>/.venv/Scripts/python.exe
+#       args: ["<REPO_ROOT>/deye_secure_proxy.py"]
+#       transport: stdio
+#       enabled: true
+#     deye_open:
+#       enabled: false
+
+# Restart Hermes — list_stations() should work with no auth step.
 ```
 
-Create `~/.deye/credentials.env` (see `credentials.env.example` format).
-
-## Hermes Config
-
-```yaml
-mcp_servers:
-  deye-secure-proxy:
-    command: C:\Users\Admin\.deye\proxy\.venv\Scripts\python.exe
-    args: ["C:\Users\Admin\.deye\proxy\deye_secure_proxy.py"]
-    transport: stdio
-    enabled: true
-  deye_open:
-    enabled: false
-```
+> On macOS/Linux, `.venv/Scripts/python` → `.venv/bin/python`.
 
 ## Agent-Visible Tools
 
-### Read-only
+### Read-only (always safe)
 - `list_stations`, `get_station_latest`, `list_station_devices`
 - `get_device_latest`, `get_station_alerts`, `get_device_alerts`
 - `get_config_system`, `get_config_battery`, `get_config_tou`
 - `get_device_measure_points`, `get_station_history`, `get_device_history`
 
-### Control (two-step)
+### Control (two-step confirmation)
 - `propose_control_change(device_sn, action_type, params)` → returns `proposal_id`
-- `confirm_control_change(proposal_id)` → executes (one-shot)
+- `confirm_control_change(proposal_id)` → executes (one-shot, consumed)
 
-See `deye-open-mcp` skill for full `action_type` list and allowed devices.
+See `skills/deye-open-mcp/SKILL.md` for full `action_type` list and allowed devices.
 
 ## Skills (Hermes Agent)
-
-The `skills/` directory contains the Hermes skills that document the proxy
-tool surface and provide domain-specific workflows (battery sizing, config review).
-
-```bash
-cp -r skills/* ~/.hermes/skills/
-```
-
-Restart Hermes after copying.
 
 | Skill | Purpose |
 |---|---|
@@ -78,6 +80,7 @@ Restart Hermes after copying.
 - Device whitelist: only `2507120169` and `2305202443` accepted for control
 - Token cached to `~/.deye/.token_cache.json` (chmod 600)
 - `call_deye_api` and `get_access_token` are NOT exposed
+- `*.env` and `.token_cache.json` are in `.gitignore`
 
 ## License
 
